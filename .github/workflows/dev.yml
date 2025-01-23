@@ -32,7 +32,7 @@
       with:
         env: '${{ needs.set-environment-dev.outputs._ENV }}'
       secrets:
-        AWS_GITHUB_OIDC_ROLE_ARN: ${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}
+        AWS_GITHUB_OIDC_ROLE_ARN: ${{secrets['AWS_GITHUB_OIDC_ROLE_ARN']}}
 
     Deploy:
       needs: set-environment-dev
@@ -41,5 +41,5 @@
       with:
         env: '${{ needs.set-environment-dev.outputs._ENV }}'
       secrets:
-        AWS_GITHUB_OIDC_ROLE_ARN: ${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}
+        AWS_GITHUB_OIDC_ROLE_ARN: ${{secrets['AWS_GITHUB_OIDC_ROLE_ARN']}}
   
