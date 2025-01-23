@@ -2,10 +2,14 @@ name: "Dev environment workflow"
 on:
   pull_request:
     branches:
-      - main
+     - main
+    # tags:
+    #   - 'v[0-9]+.[0-9]+.[0-9]+'
   push:
+    # tags:
+    #   - 'v[0-9]+.[0-9]+.[0-9]+'
     branches:
-      - main
+     - main
 
 permissions:
   id-token: write
