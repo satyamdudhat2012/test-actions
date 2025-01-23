@@ -1,0 +1,13 @@
+name: "AWS and Terraform setup"
+description: "Common setup of AWS and Terrraform"
+   
+runs:
+  using: composite
+  steps:
+    - name: "Terraform and Terragrunt configuration"
+      uses: ./.github/actions/setup-terraform-and-terragrunt
+      
+    - name: "AWS cli and credentials configuration"
+      uses: ./.github/actions/configure-aws-cli
+      with:
+        AWS_GITHUB_OIDC_ROLE_ARN: ${{ inputs.AWS_GITHUB_OIDC_ROLE_ARN}}

@@ -1,0 +1,25 @@
+name: "Dev environment workflow"
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  Terraform-Plan:
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/reuseable_terraform_plan.yml
+    secrets:
+      AWS_GITHUB_OIDC_ROLE_ARN: '${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}'
+
+  Deploy:
+    if: ${{ github.event_name == 'push' }}
+    uses: ./.github/workflows/reuseable_deploy.yml
+    secrets:
+      AWS_GITHUB_OIDC_ROLE_ARN: '${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}'

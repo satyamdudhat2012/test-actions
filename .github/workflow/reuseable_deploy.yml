@@ -1,0 +1,24 @@
+name: "Infra repo push pipeline"
+on:
+  workflow_call:
+    secrets:
+      AWS_GITHUB_OIDC_ROLE_ARN:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Repo"
+        uses: actions/checkout@v4
+
+      - name: "AWS and Terraform configuration"
+        uses: ./.github/actions/terraform-aws-setup
+        with:
+          AWS_GITHUB_OIDC_ROLE_ARN: '${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}'
+
+      - name: "Deployment plan"
+        run: make plan
+        
+      - name: "Deploy resources"
+        run: make apply-ci

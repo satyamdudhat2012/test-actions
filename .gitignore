@@ -1,0 +1,12 @@
+# terraform
+terraform.tfstate*
+.terraform*
+
+# Local .terragrunt directories
+**/.terragrunt-cache
+!.terraform-version
+!.terragrunt-version
+
+
+.DS_Store
+**/.DS_Store

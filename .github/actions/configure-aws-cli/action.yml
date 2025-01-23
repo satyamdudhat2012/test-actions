@@ -1,0 +1,27 @@
+name: "AWS credentials"
+description: "Configure AWS credentials using OIDC"
+
+runs:
+  using: composite
+  steps:
+    - name: "AWS region name"
+      id: AWS-REGION
+      run: |
+        echo "AWS_REGION=$(sed -n 's/^_AWS_REGION=//p' makefile)" >> $GITHUB_OUTPUT
+      shell: 
+        bash
+
+    - name: "Configure AWS credentials"
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{inputs.AWS_GITHUB_OIDC_ROLE_ARN}}
+        role-session-name: ${{ github.event.repository.name }}_${{github.actor}}
+        aws-region: ${{steps.AWS-REGION.outputs.AWS_REGION}}
+
+    - name: "Configure AWS cli"
+      run: make awscli-ci
+      env:
+        _AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+        _AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        _AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
+      shell: bash
