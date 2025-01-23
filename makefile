@@ -20,3 +20,7 @@ TF_VAR_parameter_prefix=/$(_PROJECT)/$(_ENV)
 
 init plan apply show destroy:
 	@cd $(TERRAGRUNT_PATH) && terragrunt $@
+
+tf:
+	@tfswitch
+	@tgswitch
