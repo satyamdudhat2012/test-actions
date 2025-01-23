@@ -8,6 +8,7 @@ runs:
       id: _AWS_REGION
       run: |
         echo "_AWS_REGION=$(sed -n 's/^_AWS_REGION=//p' Makefile)" >> $GITHUB_OUTPUT
+        echo _AWS_REGION
       shell: bash
 
     - name: Configure AWS Credentials
