@@ -1,21 +1,31 @@
-name: "Infra repo pull pipeline"
+name: Terraform-plan
+
 on:
   workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
     secrets:
       AWS_GITHUB_OIDC_ROLE_ARN:
         required: true
-        
+
+env:
+  _ENV: ${{ inputs.env }}
+    
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
     steps:
-      - name: "Checkout repo"
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: "AWS and Terraform configuration"
+      - name: Install & Setup Terraform-Terragrunt & Setup AWS
+        id: setup
         uses: ./.github/actions/terraform-aws-setup
         with:
-          AWS_GITHUB_OIDC_ROLE_ARN: '${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}'
-
-      - name: "Deployment plan"
+          secret_input: ${{ secrets.AWS_GITHUB_OIDC_ROLE_ARN }}
+      
+      - name: Deployment Plan
         run: make plan

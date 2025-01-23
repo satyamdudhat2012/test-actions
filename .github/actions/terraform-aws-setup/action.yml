@@ -10,4 +10,4 @@ runs:
     - name: "AWS cli and credentials configuration"
       uses: ./.github/actions/configure-aws-cli
       with:
-        AWS_GITHUB_OIDC_ROLE_ARN: ${{ inputs.AWS_GITHUB_OIDC_ROLE_ARN}}
+        secret_input: ${{ inputs.secret_input}}

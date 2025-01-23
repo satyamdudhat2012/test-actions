@@ -1,30 +1,45 @@
-name: "Dev environment workflow"
-on:
-  pull_request:
-    # tags:
-    #   - 'v[0-9]+.[0-9]+.[0-9]+'
-    branches:
-     - main
+---
+  name: Dev environment workflow
+  on:
+    push:
+      branches:
+        - main
+      tags:
+        - v[0-9]+.[0-9]+.[0-9]+
+    pull_request:
+      branches:
+        - main
+      tags:
+        - v[0-9]+.[0-9]+.[0-9]+
 
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
-    branches:
-     - main
+  permissions:
+    id-token: write
+    contents: read
+  jobs:
+    set-environment-dev:
+      runs-on: ubuntu-latest
+      steps:
+      - id: environment
+        name: Set environment
+        run: echo "_ENV=dev" >> "$GITHUB_OUTPUT"
+      outputs:
+        _ENV: ${{ steps.environment.outputs._ENV }}
+  
+    Terraform-Plan:
+      needs: set-environment-dev
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: ./.github/workflows/reuseable_terraform_plan.yml
+      with:
+        env: '${{ needs.set-environment-dev.outputs._ENV }}'
+      secrets:
+        AWS_GITHUB_OIDC_ROLE_ARN: ${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}
 
-permissions:
-  id-token: write
-  contents: read
-
-jobs:
-  Terraform-Plan:
-    if: ${{ github.event_name == 'pull_request' }}
-    uses: ./.github/workflows/reuseable_terraform_plan.yml
-    secrets:
-      AWS_GITHUB_OIDC_ROLE_ARN: '${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}'
-
-  Deploy:
-    if: ${{ github.event_name == 'push' }}
-    uses: ./.github/workflows/reuseable_deploy.yml
-    secrets:
-      AWS_GITHUB_OIDC_ROLE_ARN: '${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}'
+    Deploy:
+      needs: set-environment-dev
+      if: ${{ github.event_name == 'push' }}
+      uses: ./.github/workflows/reuseable_deploy.yml
+      with:
+        env: '${{ needs.set-environment-dev.outputs._ENV }}'
+      secrets:
+        AWS_GITHUB_OIDC_ROLE_ARN: ${{secrets.AWS_GITHUB_OIDC_ROLE_ARN}}
+  
