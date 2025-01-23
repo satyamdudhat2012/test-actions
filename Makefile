@@ -7,7 +7,6 @@ REPO_NAME=th-weather-wear-infra
 _PREFIX=${_PROJECT}-${_ENV}
 SCRIPTS=infrastructure/scripts
 
-
 .EXPORT_ALL_VARIABLES:
 TF_VAR_env=$(_ENV)
 TF_VAR_aws_profile=$(_AWS_PROFILE)
