@@ -24,3 +24,35 @@ init plan apply show destroy:
 tf:
 	@tfswitch
 	@tgswitch
+
+
+apply-ci:
+	@cd $(TERRAGRUNT_PATH) && terragrunt apply -auto-approve
+
+init-upgrade:
+	@cd $(TERRAGRUNT_PATH) && terragrunt init --upgrade
+
+fmt:
+	@terraform fmt --recursive
+	@terragrunt hclfmt
+
+awscli-ci:
+	@./$(SCRIPTS)/awscli
+
+tfimport:
+	@cd $(TERRAGRUNT_PATH) && terragrunt import $(resource_id) $(remote_resource_id)
+
+tftarget:
+	@cd $(TERRAGRUNT_PATH) && terragrunt apply -target $(resource_id)
+	
+tfdestroy:
+	@cd $(TERRAGRUNT_PATH) && terragrunt destroy -target $(resource_id)
+
+mvstate:
+	@cd $(TERRAGRUNT_PATH) && terragrunt state mv $(source_resource_id) $(target_resource_id)
+
+tfstate:
+	@cd $(TERRAGRUNT_PATH) && terragrunt state list
+	
+tfimport:
+	@cd $(TERRAGRUNT_PATH) && terragrunt import $(resource_id) $(remote_resource_id)
